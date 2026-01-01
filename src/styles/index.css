@@ -302,7 +302,7 @@ body {
 
 @media (max-width: 1024px) {
   .timeline-rail::before {
-    left: 22px;
+    left: 32px;
     transform: none;
   }
 
@@ -313,7 +313,7 @@ body {
 
   .center-col {
     grid-column: 1;
-    justify-content: flex-start;
+    justify-content: center;
   }
 
   .left-col,
@@ -328,6 +328,47 @@ body {
 
   .t-card {
     width: 100%;
+    max-width: none;
+  }
+
+  .t-top {
+    flex-wrap: wrap;
+    row-gap: 6px;
+  }
+}
+
+@media (max-width: 640px) {
+  .snap-section {
+    padding: 0 16px;
+  }
+
+  .timeline-rail::before {
+    left: 26px;
+  }
+
+  .t-item {
+    grid-template-columns: 52px 1fr;
+    gap: 12px;
+    margin: 22px 0;
+  }
+
+  .center-col {
+    justify-content: center;
+  }
+
+  .t-node {
+    width: 36px;
+    height: 36px;
+    box-shadow: 0 0 0 8px rgba(42, 39, 36, 0.08);
+  }
+
+  .t-node img {
+    width: 16px;
+    height: 16px;
+  }
+
+  .t-date {
+    white-space: nowrap;
   }
 }
 
@@ -408,6 +449,7 @@ body {
   flex-wrap: wrap;
   gap: 8px;
   margin-top: auto;
+  padding-top: 8px;
 }
 
 .p-pill {
@@ -612,7 +654,7 @@ body {
   z-index: 1;
   width: 100%;
   height: auto;
-  max-height: min(60vh, 420px);
+  max-height: min(42vh, 320px);
   object-fit: contain;
   display: block;
   user-select: none;
@@ -684,11 +726,11 @@ body {
   }
 
   .pm-carousel-img {
-    max-height: 50vh;
+    max-height: min(38vh, 260px);
   }
 
-  .snap-section {
-    padding: 0 16px;
+  .pm-card {
+    padding: 20px 18px;
   }
 }
 
