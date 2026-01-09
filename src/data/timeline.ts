@@ -23,7 +23,7 @@ export const TIMELINE: TimelineItem[] = [
     kind: "education",
     title: "M.S. Computer Science",
     org: "University of Connecticut",
-    date: "May 2026 (Expected)",
+    date: "Aug 2025 - present",
     bullets: [
     ],
   },
