@@ -29,7 +29,7 @@ export const PROJECTS: Project[] = [
     longDescription:
       "",
     tech: ["Python", "Dash", "Plotly", "Data Visualization"],
-    links: { github: "https://github.com/EbubeJD/breast-cancer-dashboard", live: "https://breast-cancer-dashboard.up.railway.app/", dataset: "https://www.kaggle.com/datasets/raghadalharbi/breast-cancer-gene-expression-profiles-metabric"},
+    links: { github: "https://github.com/EbubeJD/breast-cancer-dashboard", live: "https://breast-cancer-dashboard-production.up.railway.app/", dataset: "https://www.kaggle.com/datasets/raghadalharbi/breast-cancer-gene-expression-profiles-metabric"},
     images: [
       {
         src: "/images/METABRIC/cover.webp",

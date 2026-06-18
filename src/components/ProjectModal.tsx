@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import type { Project } from "../data/projects";
 
@@ -48,23 +48,23 @@ export default function ProjectModal({
     setIndex(0);
   }, [project.title]);
 
-  const closeWithAnim = () => {
+  const closeWithAnim = useCallback(() => {
     setOpen(false);
     window.setTimeout(() => {
       onClose();
       lastFocusRef.current?.focus({ preventScroll: true });
     }, 200);
-  };
+  }, [onClose]);
 
-  const goPrev = () => {
+  const goPrev = useCallback(() => {
     if (!isCarousel) return;
     setIndex((i) => (i - 1 + images.length) % images.length);
-  };
+  }, [isCarousel, images.length]);
 
-  const goNext = () => {
+  const goNext = useCallback(() => {
     if (!isCarousel) return;
     setIndex((i) => (i + 1) % images.length);
-  };
+  }, [isCarousel, images.length]);
 
   useEffect(() => {
     if (!hasImages) return;
@@ -164,7 +164,7 @@ export default function ProjectModal({
       window.removeEventListener("keydown", onKeyDown);
       document.body.style.overflow = prevOverflow;
     };
-  }, [hasImages, isCarousel, images.length]);
+  }, [hasImages, closeWithAnim, goPrev, goNext]);
 
   return createPortal(
     <div

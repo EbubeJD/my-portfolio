@@ -1,6 +1,7 @@
 import { TIMELINE, type TimelineItem } from "../data/timeline";
 import { kindIcon } from "../utils/icons";
 import { useEffect } from "react";
+import { renderBold } from "../utils/renderBold";
 
 function TimelineCard({ item }: { item: TimelineItem }) {
   return (
@@ -18,16 +19,6 @@ function TimelineCard({ item }: { item: TimelineItem }) {
         ))}
       </ul>
     </div>
-  );
-}
-
-function renderBold(text: string) {
-  return text.split(/(\*\*.*?\*\*)/g).map((part, i) =>
-    part.startsWith("**") && part.endsWith("**") ? (
-      <strong key={i}>{part.slice(2, -2)}</strong>
-    ) : (
-      <span key={i}>{part}</span>
-    )
   );
 }
 

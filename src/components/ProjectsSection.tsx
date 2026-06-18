@@ -1,16 +1,7 @@
 import { useState, useEffect } from "react";
 import { PROJECTS, type Project } from "../data/projects";
 import ProjectModal from "./ProjectModal";
-
-function renderBold(text: string) {
-  return text.split(/(\*\*.*?\*\*)/g).map((part, i) =>
-    part.startsWith("**") && part.endsWith("**") ? (
-      <strong key={i}>{part.slice(2, -2)}</strong>
-    ) : (
-      <span key={i}>{part}</span>
-    )
-  );
-}
+import { renderBold } from "../utils/renderBold";
 
 export default function ProjectsSection() {
   const [active, setActive] = useState<Project | null>(null);
