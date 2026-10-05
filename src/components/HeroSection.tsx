@@ -13,11 +13,11 @@ export default function HeroSection() {
           </h1>
 
           <div className="sub">
-            <p>Computer Science Graduate Student · Class of 2026</p>
+            <p>Analyst Developer · Data Scientist</p>
           </div>
 
           <p className="about">
-            I'm a student focused on <b>machine learning</b> and <b>applied data systems</b>, 
+            I'm a recent graduate focused on <b>machine learning</b> and <b>applied data systems</b>, 
             with experience in <b>ML/AI modeling and simulation</b>, large-scale <b>data analysis</b> and <b>visualization</b>, and <b>software development</b> using <b>Python</b>, <b>SQL</b>, and <b>C#</b>. 
             I care about clarity, maintainability, and building systems that make complex data easier to reason about.
           </p>

@@ -23,6 +23,21 @@ export type Project = {
 
 export const PROJECTS: Project[] = [
   {
+    title: "UConn Courses Recommender",
+    subtitle: "AI Course & Professor Chatbot",
+    description: "A **RAG chatbot** for picking classes and professors at **UConn**, grounded in real **student reviews** and the official **course catalog**. Uses **semantic search** over locally built embedding indexes and **Gemini** to answer questions about professors, course topics, and gen-ed requirements, with every answer citing its sources.",
+    longDescription:
+      "",
+    tech: ["TypeScript", "Next.js", "Gemini", "Transformers.js", "RAG"],
+    links: { github: "https://github.com/EbubeJD/Uconn-Courses-Recommender", live: "https://uconnprofs.duckdns.org/" },
+    images: [
+      {
+        src: "/images/Courses-Recommender/chat.png",
+        alt: "UConn Courses Recommender chat interface",
+      },
+    ]
+  },
+  {
     title: "Breast Cancer Dashboard",
     subtitle: "Data Visualization Dashboard",
     description: "Interactive **data visualization dashboard** built on the **METABRIC** breast cancer dataset, exploring clinical and genomic features across **~2,000 patient** samples.\nDesigned to support exploratory analysis, pattern discovery, and survival trend investigation.",

@@ -374,6 +374,8 @@ body {
 
 .snap-section.projects {
   flex-direction: column;
+  min-height: 0;
+  padding-bottom: 32px;
 }
 
 .projects-inner {
@@ -383,10 +385,72 @@ body {
   transform: translateY(+50px);
 }
 
-.projects-grid {
+.projects-carousel {
+  position: relative;
+}
+
+.projects-nav-btn {
+  position: absolute;
+  /* centre on the cards: the track leaves 18px of shadow room below them */
+  top: calc(50% - 9px);
+  transform: translateY(-50%);
+  z-index: 2;
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+  cursor: pointer;
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 18px;
+  place-items: center;
+  transition: background 160ms ease, color 160ms ease;
+}
+
+.projects-nav-btn:hover {
+  background: var(--btn-hover);
+  color: var(--surface);
+}
+
+.projects-nav-btn:focus-visible {
+  outline: 3px solid rgba(42, 39, 36, 0.2);
+  outline-offset: 2px;
+}
+
+.projects-nav-prev { left: -21px; }
+.projects-nav-next { right: -21px; }
+
+.projects-grid {
+  --per-page: 3;
+  display: flex;
+  --gap: 24px;
+  gap: var(--gap);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  /* room for card shadows and hover lift inside the scroll clip */
+  padding: 16px var(--gap) 56px;
+  margin: -16px calc(-1 * var(--gap)) -38px;
+  scroll-padding-inline: var(--gap);
+  /* fade the side margins so neighbouring cards and shadows never end on a hard edge */
+  --edge-fade: linear-gradient(to right, transparent, #000 var(--gap), #000 calc(100% - var(--gap)), transparent);
+  -webkit-mask-image: var(--edge-fade);
+  mask-image: var(--edge-fade);
+}
+
+.projects-grid::-webkit-scrollbar {
+  display: none;
+}
+
+.projects-grid .p-card-btn {
+  flex: 0 0 calc((100% - (var(--per-page) - 1) * var(--gap)) / var(--per-page));
+  scroll-snap-align: start;
+}
+
+.projects-grid .p-card-btn:not([data-in-view]) {
+  box-shadow: none;
 }
 
 .p-card-btn {
@@ -716,14 +780,17 @@ body {
 
 @media (max-width: 1024px) {
   .projects-grid {
-    grid-template-columns: repeat(2, 1fr);
+    --per-page: 2;
   }
 }
 
 @media (max-width: 640px) {
   .projects-grid {
-    grid-template-columns: 1fr;
+    --per-page: 1;
   }
+
+  .projects-nav-prev { left: -14px; }
+  .projects-nav-next { right: -14px; }
 
   .pm-carousel-img {
     max-height: min(38vh, 260px);

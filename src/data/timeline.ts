@@ -11,7 +11,7 @@ export type TimelineItem = {
 export const TIMELINE: TimelineItem[] = [
   {
     kind: "work",
-    title: "Junior Developer",
+    title: "Analyst Developer",
     org: "Transaction Solutions LLC",
     date: "June 2025 - Present",
     bullets: [
@@ -34,8 +34,8 @@ export const TIMELINE: TimelineItem[] = [
     org: "University of Connecticut",
     date: "September 2025 - May 2026",
     bullets: [
-      "Conducting research on **quantum communication** and multi-basis qubit **measurement analysis**",
-      "Supporting 150 students with boolean logic, combinational and sequential circuits",
+      "Conducted research on **quantum communication** and multi-basis qubit **measurement analysis**",
+      "Supported 150 students with boolean logic, combinational and sequential circuits",
     ],
   },
   {

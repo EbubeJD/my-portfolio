@@ -1,31 +1,125 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { PROJECTS, type Project } from "../data/projects";
 import ProjectModal from "./ProjectModal";
 import { renderBold } from "../utils/renderBold";
 
+const COUNT = PROJECTS.length;
+// three copies of the list; the middle one is "home" and the outer two let the track loop
+const LOOPED = [...PROJECTS, ...PROJECTS, ...PROJECTS];
+
 export default function ProjectsSection() {
   const [active, setActive] = useState<Project | null>(null);
+  const trackRef = useRef<HTMLDivElement | null>(null);
+  const indexRef = useRef(0);
+  const [revealed, setRevealed] = useState(false);
+
+  // distance between the starts of two neighbouring cards
+  const cardStep = useCallback(() => {
+    const cards = trackRef.current?.querySelectorAll<HTMLElement>(".p-card-btn");
+    if (!cards || cards.length < 2) return 0;
+    return cards[1].offsetLeft - cards[0].offsetLeft;
+  }, []);
+
+  // jump (without animation) back into the middle copy; returns the position there
+  const recenter = useCallback(() => {
+    const track = trackRef.current;
+    const step = cardStep();
+    if (!track || !step) return COUNT;
+
+    let pos = Math.round(track.scrollLeft / step);
+    if (pos < COUNT) {
+      track.scrollLeft += COUNT * step;
+      pos += COUNT;
+    } else if (pos >= 2 * COUNT) {
+      track.scrollLeft -= COUNT * step;
+      pos -= COUNT;
+    }
+    return pos;
+  }, [cardStep]);
+
+  const scrollToPos = useCallback(
+    (pos: number) => {
+      const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      trackRef.current?.scrollTo({
+        left: pos * cardStep(),
+        behavior: reduce ? "auto" : "smooth",
+      });
+    },
+    [cardStep]
+  );
+
+  const move = useCallback(
+    (dir: 1 | -1) => {
+      const track = trackRef.current;
+      const step = cardStep();
+      if (!track || !step) return;
+
+      const perPage = Math.max(1, Math.round(track.clientWidth / step));
+      scrollToPos(recenter() + dir * perPage);
+    },
+    [cardStep, recenter, scrollToPos]
+  );
 
   useEffect(() => {
-    const cards = Array.from(
-      document.querySelectorAll<HTMLElement>(".p-card-btn")
-    );
+    const track = trackRef.current;
+    if (!track) return;
 
-    const obs = new IntersectionObserver(
+    let settle: number | undefined;
+
+    // only cards on screen carry a shadow, so off-screen neighbours can't bleed into the edges.
+    // every copy of a project is marked together so the loop jump never changes what is drawn
+    const markInView = () => {
+      const cards = Array.from(track.querySelectorAll<HTMLElement>(".p-card-btn"));
+      const pad = parseFloat(getComputedStyle(track).paddingLeft) || 0;
+      const width = track.clientWidth - 2 * pad;
+      const inView = new Set<number>();
+
+      cards.forEach((card, i) => {
+        const centre = card.offsetLeft + card.offsetWidth / 2 - track.scrollLeft;
+        if (centre >= 0 && centre <= width) inView.add(i % COUNT);
+      });
+      cards.forEach((card, i) => card.toggleAttribute("data-in-view", inView.has(i % COUNT)));
+    };
+
+    const onScroll = () => {
+      const step = cardStep();
+      if (!step) return;
+
+      const i = ((Math.round(track.scrollLeft / step) % COUNT) + COUNT) % COUNT;
+      indexRef.current = i;
+      markInView();
+
+      window.clearTimeout(settle);
+      settle = window.setTimeout(recenter, 140);
+    };
+
+    // fires once on observe, then whenever the track is resized
+    const ro = new ResizeObserver(() => {
+      track.scrollLeft = (COUNT + indexRef.current) * cardStep();
+      markInView();
+    });
+    ro.observe(track);
+
+    const io = new IntersectionObserver(
       (entries) => {
-        for (const e of entries) {
-          if (e.isIntersecting) {
-            e.target.classList.add("is-visible");
-            obs.unobserve(e.target);
-          }
+        if (entries.some((e) => e.isIntersecting)) {
+          setRevealed(true);
+          io.disconnect();
         }
       },
       { threshold: 0.15 }
     );
+    io.observe(track);
 
-    cards.forEach((el) => obs.observe(el));
-    return () => obs.disconnect();
-  }, []);
+    track.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.clearTimeout(settle);
+      ro.disconnect();
+      io.disconnect();
+      track.removeEventListener("scroll", onScroll);
+    };
+  }, [cardStep, recenter]);
 
   return (
     <section className="snap-section projects">
@@ -34,26 +128,51 @@ export default function ProjectsSection() {
           <h2 className="h2">Projects</h2>
         </header>
 
-        <div className="projects-grid">
-          {PROJECTS.map((p) => (
-            <button
-              key={p.title}
-              type="button"
-              className="p-card p-card-btn"
-              onClick={() => setActive(p)}
-            >
-              <h3 className="p-title">{p.title}</h3>
-              <p className="p-desc">{renderBold(p.description)}</p>
+        <div className="projects-carousel">
+          <button
+            type="button"
+            className="projects-nav-btn projects-nav-prev"
+            onClick={() => move(-1)}
+            aria-label="Previous projects"
+          >
+            <ChevronLeft size={20} aria-hidden="true" />
+          </button>
 
-              <div className="p-tech">
-                {p.tech.map((t) => (
-                  <span key={t} className="p-pill">
-                    {t}
-                  </span>
-                ))}
-              </div>
-            </button>
-          ))}
+          <div className="projects-grid" ref={trackRef}>
+            {LOOPED.map((p, i) => {
+              const isClone = i < COUNT || i >= 2 * COUNT;
+              return (
+                <button
+                  key={i}
+                  type="button"
+                  className={`p-card p-card-btn ${revealed ? "is-visible" : ""}`}
+                  onClick={() => setActive(p)}
+                  aria-hidden={isClone || undefined}
+                  tabIndex={isClone ? -1 : undefined}
+                >
+                  <h3 className="p-title">{p.title}</h3>
+                  <p className="p-desc">{renderBold(p.description)}</p>
+
+                  <div className="p-tech">
+                    {p.tech.map((t) => (
+                      <span key={t} className="p-pill">
+                        {t}
+                      </span>
+                    ))}
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+
+          <button
+            type="button"
+            className="projects-nav-btn projects-nav-next"
+            onClick={() => move(1)}
+            aria-label="Next projects"
+          >
+            <ChevronRight size={20} aria-hidden="true" />
+          </button>
         </div>
       </div>
 
