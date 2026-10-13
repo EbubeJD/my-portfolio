@@ -51,12 +51,8 @@ export default function ProjectsSection() {
 
   const move = useCallback(
     (dir: 1 | -1) => {
-      const track = trackRef.current;
-      const step = cardStep();
-      if (!track || !step) return;
-
-      const perPage = Math.max(1, Math.round(track.clientWidth / step));
-      scrollToPos(recenter() + dir * perPage);
+      if (!cardStep()) return;
+      scrollToPos(recenter() + dir);
     },
     [cardStep, recenter, scrollToPos]
   );
@@ -133,7 +129,7 @@ export default function ProjectsSection() {
             type="button"
             className="projects-nav-btn projects-nav-prev"
             onClick={() => move(-1)}
-            aria-label="Previous projects"
+            aria-label="Previous project"
           >
             <ChevronLeft size={20} aria-hidden="true" />
           </button>
@@ -169,7 +165,7 @@ export default function ProjectsSection() {
             type="button"
             className="projects-nav-btn projects-nav-next"
             onClick={() => move(1)}
-            aria-label="Next projects"
+            aria-label="Next project"
           >
             <ChevronRight size={20} aria-hidden="true" />
           </button>

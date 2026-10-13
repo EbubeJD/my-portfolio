@@ -13,11 +13,11 @@ export const TIMELINE: TimelineItem[] = [
     kind: "work",
     title: "Analyst Developer",
     org: "Transaction Solutions LLC",
-    date: "June 2025 - Present",
+    date: "May 2025 - Present",
     bullets: [
-      "Developed software in **C#** to process and validate financial statements across **10+ payment processors**",
-      "Implemented normalization and verification logic to **standardize data** from a **dozen statement formats**",
-      "Used **SQL** databases to store, query, and aggregate **1k+ structured financial records**"
+      "Built a rule-based **C#** pipeline to clean and normalize merchant statement data for **SQL Server**, cutting manual prep time by **60%**",
+      "Built a client-facing **ASP.NET** dashboard with **Chart.js** visualizations across **4+ report pages**, backed by **T-SQL** stored procedures",
+      "Automated multi-sheet Excel reporting with **C#** and **NPOI**, reducing formatting and data-entry errors by **80%**"
     ],
   },
   {
